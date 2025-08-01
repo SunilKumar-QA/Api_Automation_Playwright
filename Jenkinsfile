@@ -30,13 +30,6 @@ pipeline {
                 bat 'cd C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\API_Playwright_CI && pytest apis/'
             }
         }
-
-        stage('Stop JSON Server') {
-            steps {
-                echo '🛑 Stopping json-server...'
-                bat 'taskkill /F /IM node.exe || echo "json-server already stopped."'
-            }
-        }
     }
 
     post {
