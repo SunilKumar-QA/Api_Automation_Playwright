@@ -11,9 +11,8 @@ pipeline {
         stage('Start JSON Server') {
             steps {
                 echo 'Starting JSON Server...'
-                // Start json-server in the background using Windows CMD
-                bat "start /B json-server --watch C:\\Users\\LENOVO\\apis\\db.json --port 3000"
-                sleep time: 5, unit: 'SECONDS'  // Give server time to start
+                bat 'start "" cmd /c "json-server --watch C:\\Users\\LENOVO\\apis\\db.json --port 3000"'
+                sleep time: 5, unit: 'SECONDS'
             }
         }
 
