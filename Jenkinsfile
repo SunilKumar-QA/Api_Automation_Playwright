@@ -1,44 +1,53 @@
 pipeline {
     agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'master', url: 'https://github.com/SunilKumar-QA/Api_Automation_Playwright.git'
-            }
-        }
+    environment {
+        PROJECT_DIR = 'C:\\Users\\LENOVO\\apis'
+    }
 
+    stages {
         stage('Start JSON Server') {
             steps {
-                echo 'Starting JSON Server...'
-                bat 'start "" cmd /c "json-server --watch C:\\Users\\LENOVO\\apis\\db.json --port 3000"'
-                sleep time: 5, unit: 'SECONDS'
+                echo '🚀 Starting json-server from server.js...'
+                bat 'start "" cmd /c "cd %PROJECT_DIR% && node server.js"'
+                sleep time: 5, unit: 'SECONDS' // Give server time to start
             }
         }
 
-        stage('Setup Python VirtualEnv') {
+        stage('Install Python Dependencies') {
             steps {
-                bat 'python -m venv venv'
-                bat 'venv\\Scripts\\activate && python -m pip install --upgrade pip'
+                echo '📦 Installing Python dependencies...'
+                bat 'cd %PROJECT_DIR% && pip install -r requirements.txt'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Install Node Dependencies') {
             steps {
-                bat 'venv\\Scripts\\activate && pip install -r requirements.txt'
-                bat 'venv\\Scripts\\activate && playwright install'
+                echo '📦 Installing Node.js dependencies...'
+                bat 'cd %PROJECT_DIR% && npm install'
             }
         }
 
-        stage('Run Tests') {
+        stage('Run Playwright API Tests') {
             steps {
-                bat 'venv\\Scripts\\activate && pytest'
+                echo '🧪 Running API tests...'
+                bat 'cd %PROJECT_DIR% && pytest --maxfail=1 --disable-warnings -v'
+            }
+        }
+
+        stage('Stop JSON Server') {
+            steps {
+                echo '🛑 Stopping json-server...'
+                bat 'taskkill /F /IM node.exe || echo "json-server was already stopped."'
             }
         }
     }
 
     post {
-        
+        always {
+            echo '🧹 Cleaning up...'
+            bat 'taskkill /F /IM node.exe || echo "json-server already stopped."'
+        }
         success {
             echo '✅ All API tests passed.'
         }
