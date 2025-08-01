@@ -27,7 +27,7 @@ pipeline {
         stage('Run Playwright API Tests') {
             steps {
                 echo '🚀 Running Playwright API tests...'
-                bat 'cd C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\API_Playwright_CI && pytest tests/'
+                bat 'cd C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\API_Playwright_CI && pytest apis/'
             }
         }
 
